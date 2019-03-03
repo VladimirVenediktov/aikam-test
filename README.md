@@ -18,7 +18,7 @@ dump БД: store.sql (в корневом каталоге проекта)
 
 <b>Запуск приложения:</b> 
 
-Вариант 1: mvn clean package && java -jar target/store-1.0.jar
+Вариант 1: mvn clean package, java -jar target/store-1.0.jar
 
 Вариант 2: mvn spring-boot:run
 
