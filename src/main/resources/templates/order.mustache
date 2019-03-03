@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Информация о заказе</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style type="text/css">
+TABLE {
+	font-family: Verdana;
+	text-align: center;
+	width: 50%;
+	height: 10%;
+	background: #00A287;
+	border: 2px solid #000;
+	border-collapse: collapse;
+	margin: auto;
+}
+
+TD, TH {
+	padding: 5px;
+	border: 1px solid #000;
+}
+</style>
+</head>
+<body>
+	<table>
+		<caption style="font-size: 16px">Информация о заказе №{{orderNumber}}</caption>
+		<tr>
+			<th>наименование товара</th>
+			<th>кол-во (шт)</th>
+			<th>цена</th>
+			<th>сумма</th>
+		</tr>
+		{{#orderInfo}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{amount}}</td>
+			<td>{{price}}</td>
+			<td>{{sum}}</td>
+		</tr>
+		{{/orderInfo}}
+	</table>
+	<h4>Итого: {{resultSum}}</h4>
+</body>
+</html>

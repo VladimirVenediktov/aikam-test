@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Заказы</title>
+<style type="text/css">
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #f5f5f5;
+	font-family: Verdana;
+	text-align: center;
+}
+
+#wrap {
+	width: 400px;
+	margin: 0 auto;
+	background-color: white;
+	border: 2px solid #000;
+}
+
+#header {
+	height: auto;
+	background-color: #34D0B6;
+	padding: 5;
+	text-align: left;
+}
+
+#content {
+	height: auto;
+	background-color: #00A287;
+}
+
+#footer {
+	height: auto;
+	background-color: #34D0B6;
+}
+
+.content {
+	padding: 15px;
+}
+
+ol {
+	list-style-type: none;
+    counter-reset:  item;
+}
+
+li:before {
+    content: counter(item) ') '; /* Добавляем к числам скобку */
+    counter-increment: item; /* Задаём имя счетчика */
+   }
+</style>
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script>
+	//поиск введенного номера в БД
+	function findNumberOrder(number){
+		
+		var find = false;
+		var orderList = [];//массив для номеров заказов
+		{{#ordersList}}
+		orderList.push({{.}});//заполнение номерами из БД (исп. данные из шаблона mustache) 
+		{{/ordersList}}
+		//проверка есть ли введенный номер заказа в БД
+		for (var i = 0; i < orderList.length; i++) {
+			if (number == orderList[i]){
+				find = true;
+			}
+		}
+		return find;
+	}
+</script>
+<script>
+	//валидация ввода номера заказа
+	function numValid(number){
+		
+		var valid = false;
+		var notMatched = "Неверный формат введенных данных!\nМожно использовать только цифры";
+		var pattern = /^[0-9]*$/;
+				
+		if (!(pattern.test(number))) {
+			alert(notMatched);
+		}
+		else{
+			valid = true;
+		}
+		return valid;
+	}
+</script>
+<script>
+	//получение информации о заказе
+	function showOrderInfo() {
+
+		var num = $('#orderNumber').val();
+		if (!numValid(num)){
+			return;
+		}
+		else{//если ввод валидный
+			if (findNumberOrder(num)){
+				
+				var dataStr = {
+						number : num
+					};
+				
+				$.ajax({
+					type : "POST",
+					url : "/order",
+					data : dataStr,
+					success : function(answer) {
+						$('#result').html(answer);
+					}
+				})
+			}
+			else {
+				alert("Номера заказа "+num+" нет в базе данных");
+				window.location.reload();
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+			<div class="content">
+				<p style="text-align: center"><b>Список заказов (№)</b></p>
+				<br>
+				<ol>
+					{{#ordersList}}
+					<li>{{.}}</li> 
+					{{/ordersList}}
+				</ol>
+			</div>
+		</div>
+		<div id="content">
+			<div class="content">
+				<p style="font-size: 14px">Выберите из списка или введите номер заказа для
+					просмотра подробной информации</p>
+				<select id="selectedOrder" onchange="$('#orderNumber').val($('#selectedOrder').val())">
+					{{#ordersList}}
+					<option>{{.}}</option>
+					{{/ordersList}}
+				</select> 
+				<input type="text" id="orderNumber" size="7">
+				<button onclick="showOrderInfo()" style="margin: 10px">ОК</button>
+			</div>
+		</div>
+		<div id="footer">
+			<div class="content">
+				<div id="result"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
